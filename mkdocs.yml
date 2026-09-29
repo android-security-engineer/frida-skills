@@ -1,0 +1,278 @@
+# Frida 学习网站 —— MkDocs Material 配置
+# 站点源目录直接指向 skills/frida 知识库（172 个文档零复制、一处维护）。
+# 构建: pip install mkdocs-material && mkdocs build
+# 部署: .github/workflows/pages.yml → GitHub Actions → GitHub Pages
+
+site_name: Frida 学习站
+site_description: 从概念、核心 API、CLI 到 Android/iOS 实战 —— Frida 动态插桩学习知识库
+site_url: https://android-security-engineer.github.io/frida-skills/
+repo_url: https://github.com/android-security-engineer/frida-skills
+repo_name: android-security-engineer/frida-skills
+docs_dir: skills/frida
+site_dir: site
+
+theme:
+  name: material
+  language: zh
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: teal
+      toggle:
+        icon: material/weather-night
+        name: 切换到深色模式
+    - scheme: slate
+      primary: deep purple
+      accent: teal
+      toggle:
+        icon: material/weather-sunny
+        name: 切换到浅色模式
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra:
+  generator: false
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  links:
+    not_found: warn
+    anchors: warn
+
+copyright: Frida 学习站 — 基于 frida-skills 知识库构建
+
+nav:
+- 首页: index.md
+- 入门入口: SKILL.md
+- 概念 Concepts:
+    - 概念 Concepts 索引: references/concepts/index.md
+    - architecture: references/concepts/architecture.md
+    - injection-model: references/concepts/injection-model.md
+    - frida-server: references/concepts/frida-server.md
+    - frida-gadget: references/concepts/frida-gadget.md
+    - host-vs-agent: references/concepts/host-vs-agent.md
+    - message-protocol: references/concepts/message-protocol.md
+    - runtimes-qjs-v8: references/concepts/runtimes-qjs-v8.md
+    - devices-and-transports: references/concepts/devices-and-transports.md
+    - spawn-attach-gating: references/concepts/spawn-attach-gating.md
+    - memory-model: references/concepts/memory-model.md
+    - security-and-authorization: references/concepts/security-and-authorization.md
+    - agent-lifecycle-deepdive: references/concepts/agent-lifecycle-deepdive.md
+    - transport-internals: references/concepts/transport-internals.md
+- 核心 API Core API:
+    - 核心 API Core API 索引: references/core-api/index.md
+    - interceptor-attach: references/core-api/interceptor-attach.md
+    - interceptor-replace: references/core-api/interceptor-replace.md
+    - interceptor-revert-flush: references/core-api/interceptor-revert-flush.md
+    - nativefunction: references/core-api/nativefunction.md
+    - nativecallback: references/core-api/nativecallback.md
+    - system-functions-errno: references/core-api/system-functions-errno.md
+    - nativepointer-read: references/core-api/nativepointer-read.md
+    - nativepointer-write: references/core-api/nativepointer-write.md
+    - nativepointer-arithmetic: references/core-api/nativepointer-arithmetic.md
+    - int64-uint64: references/core-api/int64-uint64.md
+    - memory-alloc: references/core-api/memory-alloc.md
+    - memory-scan: references/core-api/memory-scan.md
+    - memory-protect-patchcode: references/core-api/memory-protect-patchcode.md
+    - module: references/core-api/module.md
+    - module-map: references/core-api/module-map.md
+    - process: references/core-api/process.md
+    - process-ranges: references/core-api/process-ranges.md
+    - thread-backtrace: references/core-api/thread-backtrace.md
+    - apiresolver: references/core-api/apiresolver.md
+    - debugsymbol: references/core-api/debugsymbol.md
+    - stalker: references/core-api/stalker.md
+    - cmodule: references/core-api/cmodule.md
+    - rpc-exports: references/core-api/rpc-exports.md
+    - send-recv: references/core-api/send-recv.md
+    - file-io: references/core-api/file-io.md
+    - socket-io: references/core-api/socket-io.md
+    - stream-io: references/core-api/stream-io.md
+    - sqlite: references/core-api/sqlite.md
+    - checksum-crc: references/core-api/checksum-crc.md
+    - instruction-disasm: references/core-api/instruction-disasm.md
+    - gc-weakref-script: references/core-api/gc-weakref-script.md
+    - hooking-internals-stages: references/core-api/hooking-internals-stages.md
+    - stalker-transform-deepdive: references/core-api/stalker-transform-deepdive.md
+- CLI 工具:
+    - CLI 工具 索引: references/cli/index.md
+    - frida-repl: references/cli/frida-repl.md
+    - frida-trace: references/cli/frida-trace.md
+    - frida-trace-java: references/cli/frida-trace-java.md
+    - frida-trace-objc: references/cli/frida-trace-objc.md
+    - frida-ps: references/cli/frida-ps.md
+    - frida-ls-devices: references/cli/frida-ls-devices.md
+    - frida-discover: references/cli/frida-discover.md
+    - frida-kill: references/cli/frida-kill.md
+    - spawn-vs-attach: references/cli/spawn-vs-attach.md
+    - device-selection: references/cli/device-selection.md
+    - target-selection: references/cli/target-selection.md
+    - script-loading: references/cli/script-loading.md
+    - batch-mode: references/cli/batch-mode.md
+    - runtime-flags: references/cli/runtime-flags.md
+    - frida-apk: references/cli/frida-apk.md
+    - frida-server-setup: references/cli/frida-server-setup.md
+    - frida-compile: references/cli/frida-compile.md
+    - portal-and-inject: references/cli/portal-and-inject.md
+- Android 实战:
+    - Android 实战 索引: references/android/index.md
+    - java-perform: references/android/java-perform.md
+    - java-use-hook: references/android/java-use-hook.md
+    - java-overloads: references/android/java-overloads.md
+    - java-constructors: references/android/java-constructors.md
+    - java-fields: references/android/java-fields.md
+    - java-enumerate: references/android/java-enumerate.md
+    - java-choose: references/android/java-choose.md
+    - java-cast-array: references/android/java-cast-array.md
+    - java-classloaders: references/android/java-classloaders.md
+    - java-registerclass: references/android/java-registerclass.md
+    - java-reflection: references/android/java-reflection.md
+    - spawn-gating: references/android/spawn-gating.md
+    - enumerate-app: references/android/enumerate-app.md
+    - early-instrumentation: references/android/early-instrumentation.md
+    - jni-hooks: references/android/jni-hooks.md
+    - system-loadlibrary: references/android/system-loadlibrary.md
+    - art-internals: references/android/art-internals.md
+    - ssl-pinning-okhttp: references/android/ssl-pinning-okhttp.md
+    - ssl-pinning-trustmanager: references/android/ssl-pinning-trustmanager.md
+    - ssl-pinning-native: references/android/ssl-pinning-native.md
+    - root-detection: references/android/root-detection.md
+    - debugger-detection: references/android/debugger-detection.md
+    - frida-detection: references/android/frida-detection.md
+    - emulator-detection: references/android/emulator-detection.md
+    - biometric-bypass: references/android/biometric-bypass.md
+    - crypto-capture: references/android/crypto-capture.md
+    - webview-hooks: references/android/webview-hooks.md
+    - shared-prefs-sqlite: references/android/shared-prefs-sqlite.md
+- iOS 实战:
+    - iOS 实战 索引: references/ios/index.md
+    - objc-classes: references/ios/objc-classes.md
+    - objc-method-hook: references/ios/objc-method-hook.md
+    - objc-replace-implement: references/ios/objc-replace-implement.md
+    - objc-object: references/ios/objc-object.md
+    - objc-args-types: references/ios/objc-args-types.md
+    - objc-blocks: references/ios/objc-blocks.md
+    - objc-choose: references/ios/objc-choose.md
+    - objc-schedule: references/ios/objc-schedule.md
+    - ios-spawn-gating: references/ios/ios-spawn-gating.md
+    - ios-native-hooks: references/ios/ios-native-hooks.md
+    - swift-interop: references/ios/swift-interop.md
+    - jailbreak-detection: references/ios/jailbreak-detection.md
+    - ssl-pinning-ios: references/ios/ssl-pinning-ios.md
+    - ios-debugger-detection: references/ios/ios-debugger-detection.md
+    - keychain-dump: references/ios/keychain-dump.md
+    - crypto-capture-ios: references/ios/crypto-capture-ios.md
+    - gadget-ios: references/ios/gadget-ios.md
+- 配方 Recipes:
+    - 配方 Recipes 索引: references/recipes/index.md
+    - trace-native-call: references/recipes/trace-native-call.md
+    - dump-buffer: references/recipes/dump-buffer.md
+    - dump-args-generic: references/recipes/dump-args-generic.md
+    - log-string-functions: references/recipes/log-string-functions.md
+    - count-and-time-calls: references/recipes/count-and-time-calls.md
+    - replace-return-value: references/recipes/replace-return-value.md
+    - patch-instruction: references/recipes/patch-instruction.md
+    - swap-argument: references/recipes/swap-argument.md
+    - short-circuit-function: references/recipes/short-circuit-function.md
+    - scan-memory: references/recipes/scan-memory.md
+    - find-string-refs: references/recipes/find-string-refs.md
+    - enumerate-modules-exports: references/recipes/enumerate-modules-exports.md
+    - dump-registers-context: references/recipes/dump-registers-context.md
+    - android-crypto-capture: references/recipes/android-crypto-capture.md
+    - android-ssl-pinning: references/recipes/android-ssl-pinning.md
+    - android-find-class: references/recipes/android-find-class.md
+    - android-stacktrace: references/recipes/android-stacktrace.md
+    - ios-log-urls: references/recipes/ios-log-urls.md
+    - ios-jailbreak-bypass: references/recipes/ios-jailbreak-bypass.md
+    - rpc-pull-data: references/recipes/rpc-pull-data.md
+    - batch-run-logging: references/recipes/batch-run-logging.md
+    - recipe-multi-process-correlate: references/recipes/recipe-multi-process-correlate.md
+    - recipe-eternalize-persistent: references/recipes/recipe-eternalize-persistent.md
+    - recipe-remote-cluster: references/recipes/recipe-remote-cluster.md
+    - recipe-ci-reproducible: references/recipes/recipe-ci-reproducible.md
+- 指南 Guides:
+    - 指南 Guides 索引: references/guides/index.md
+    - python-binding: references/guides/python-binding.md
+    - nodejs-binding: references/guides/nodejs-binding.md
+    - typescript-agent: references/guides/typescript-agent.md
+    - message-handling: references/guides/message-handling.md
+    - agent-structure: references/guides/agent-structure.md
+    - multi-file-compile: references/guides/multi-file-compile.md
+    - reload-workflow: references/guides/reload-workflow.md
+    - error-handling: references/guides/error-handling.md
+    - headless-automation: references/guides/headless-automation.md
+    - ci-and-farms: references/guides/ci-and-farms.md
+    - workflow-recon-to-hook: references/guides/workflow-recon-to-hook.md
+    - session-management: references/guides/session-management.md
+    - performance-and-memory: references/guides/performance-and-memory.md
+    - security-hardening: references/guides/security-hardening.md
+    - version-migration-16-to-17: references/guides/version-migration-16-to-17.md
+- 演练手册 Playbooks:
+    - 演练手册 Playbooks 索引: references/playbooks/index.md
+    - pb-native-recon-to-hook: references/playbooks/pb-native-recon-to-hook.md
+    - pb-android-java-hooking: references/playbooks/pb-android-java-hooking.md
+    - pb-android-ssl-bypass: references/playbooks/pb-android-ssl-bypass.md
+    - pb-android-root-bypass: references/playbooks/pb-android-root-bypass.md
+    - pb-ios-objc-hooking: references/playbooks/pb-ios-objc-hooking.md
+    - pb-ios-pinning-bypass: references/playbooks/pb-ios-pinning-bypass.md
+    - pb-crypto-key-extraction: references/playbooks/pb-crypto-key-extraction.md
+- 参考表 Reference:
+    - 参考表 Reference 索引: references/reference/index.md
+    - platform-differences-matrix: references/reference/platform-differences-matrix.md
+    - api-changes-16-17: references/reference/api-changes-16-17.md
+    - env-globals-cheatsheet: references/reference/env-globals-cheatsheet.md
+    - error-messages-glossary: references/reference/error-messages-glossary.md
+    - glossary: references/reference/glossary.md
+- 排障 Troubleshooting:
+    - 排障 Troubleshooting 索引: references/troubleshooting/index.md
+    - no-device-no-server: references/troubleshooting/no-device-no-server.md
+    - version-skew: references/troubleshooting/version-skew.md
+    - abi-mismatch: references/troubleshooting/abi-mismatch.md
+    - permission-ptrace: references/troubleshooting/permission-ptrace.md
+    - stale-removed-api: references/troubleshooting/stale-removed-api.md
+    - nativefunction-return: references/troubleshooting/nativefunction-return.md
+    - hooks-never-fire: references/troubleshooting/hooks-never-fire.md
+    - crash-after-hook: references/troubleshooting/crash-after-hook.md
+    - anti-frida-exit: references/troubleshooting/anti-frida-exit.md
+    - remote-connect: references/troubleshooting/remote-connect.md
+    - runtime-and-trace-noise: references/troubleshooting/runtime-and-trace-noise.md
+- 作者指南: AUTHORING.md

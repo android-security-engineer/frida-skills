@@ -1,0 +1,69 @@
+name: Deploy docs site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/frida/**"
+      - "mkdocs.yml"
+      - "scripts/gen-nav.py"
+  workflow_dispatch:
+  # 允许在 PR 中预览构建结果（不部署）
+  pull_request:
+    branches: [main]
+    paths:
+      - "skills/frida/**"
+      - "mkdocs.yml"
+      - "scripts/gen-nav.py"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install MkDocs Material
+        run: |
+          pip install "mkdocs>=1.6,<2" mkdocs-material
+
+      - name: Regenerate nav from knowledge base
+        run: python3 scripts/gen-nav.py --inplace
+
+      - name: Configure GitHub Pages
+        # 仅 push 到 main 时配置 Pages；PR 只构建不部署
+        if: github.event_name == 'push'
+        uses: actions/configure-pages@v6
+
+      - name: Build site (strict — fail on broken links)
+        run: mkdocs build --strict
+
+      - name: Upload site artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    if: github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
