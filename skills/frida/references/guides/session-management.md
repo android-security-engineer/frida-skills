@@ -1,7 +1,7 @@
 ---
 name: session-management
 description: Managing multiple Frida sessions — attach/spawn pooling, script lifecycle vs session lifecycle, detach, and concurrency locks for parallel targets.
-type: summary
+type: leaf
 ---
 
 # Session management

@@ -38,7 +38,7 @@ compute-heavy agent) — it's the tested default.
 
 ## Fix — trace too noisy / too slow
 
-Narrow the target set and combine include (`-i`) with exclude (`-X`) globs:
+Narrow the target set and combine include (`-i`) with exclude (`-x`) globs:
 
 ```sh
 # Too broad — floods:
@@ -47,8 +47,8 @@ frida-trace -U -n com.example.app -i "*"
 # Focused — only the calls you care about:
 frida-trace -U -n com.example.app -i "SSL_read" -i "SSL_write"
 
-# Include a family but exclude the hot noise:
-frida-trace -U -n com.example.app -i "recv*" -X "*recvmsg*"
+# Include a family but exclude the hot noise (-x, lowercase, takes FUNCTION globs):
+frida-trace -U -n com.example.app -i "recv*" -x "*recvmsg*"
 
 # Android Java methods, one class only:
 frida-trace -U -f com.example.app -j "com.example.crypto.*!*"

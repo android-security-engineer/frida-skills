@@ -1,7 +1,7 @@
 ---
 name: hooking-internals-stages
 description: What happens inside one Interceptor.attach — trampoline install, onEnter/onLeave dispatch, reentrancy and flush semantics; with a flowchart.
-type: diagram
+type: leaf
 ---
 
 # Hooking internals — the stages of one attach

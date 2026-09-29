@@ -58,7 +58,7 @@ markdown_extensions:
       custom_fences:
         - name: mermaid
           class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
+          format: !!python/name:pymdownx.superfences.fence_div_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.details
@@ -70,6 +70,10 @@ markdown_extensions:
 
 extra:
   generator: false
+
+extra_javascript:
+  - assets/js/mermaid.min.js
+  - assets/js/mermaid-init.js
 
 validation:
   omitted_files: warn

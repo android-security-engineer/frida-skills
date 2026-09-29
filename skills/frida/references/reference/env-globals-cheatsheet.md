@@ -1,12 +1,30 @@
 ---
 name: env-globals-cheatsheet
-description: One-row-per-global cheatsheet of every agent global verified present in Frida 17 — Interceptor, NativeFunction, Memory, Module, Process, Stalker, CModule, Java, ObjC, File, Socket, SqliteDatabase, Checksum, Instruction, Thread, DebugSymbol, ApiResolver, Script.
-type: summary
+description: One-row-per-global cheatsheet of every agent global verified in Frida 17 — Interceptor, Memory, Module, Process, Stalker, Java, ObjC, File, Socket, Sqlite, Thread, DebugSymbol, Script (17.15.3).
+type: leaf
 ---
 
 # Agent globals cheatsheet
 
-Every global your agent can reach, one row each. Verified on 17.15.3.
+Every global your agent can reach, one row each. Verified on 17.15.3. Use this
+page to **decide which API to reach for**, then open its leaf doc for the call
+shapes — don't hold the full grammar in your head.
+
+## How to pick the right global
+
+Quick decision path:
+
+- **Hooking a call** → `Interceptor` (attach/replace) or `NativeFunction`.
+- **Memory read/write** → `NativePointer` methods (never a `Memory.` free call
+  in 17). Polish-size allocations → `Memory.alloc`.
+- **Where an address belongs** → `Process.getModuleByName(...)` / `ModuleMap`.
+- **Tracing, step-by-step** → `Stalker` (heavy; prefer Interceptor for call args).
+- **Android Java layer** → `Java.*` inside `Java.perform`.
+- **iOS ObjC/Swift layer** → `ObjC.*` (gcd via `ObjC.schedule`).
+- **Persistence / side-channel I/O** → `File`, `Socket`, `SqliteDatabase`.
+- **Host communication** → `send`/`recv`/`rpc`.
+
+## The table
 
 | Global | Key members / notes | Leaf doc |
 | --- | --- | --- |
@@ -34,3 +52,32 @@ Every global your agent can reach, one row each. Verified on 17.15.3.
 | `ApiResolver` | `new ApiResolver('module'\|'objc'\|'swift')` | [../core-api/apiresolver.md](../core-api/apiresolver.md) |
 | `Script` | `.runtime`, `.bindWeak`, `.eternalize` | [../core-api/gc-weakref-script.md](../core-api/gc-weakref-script.md) |
 | `send`/`recv`/`rpc` | host↔agent messaging | [../core-api/send-recv.md](../core-api/send-recv.md) |
+
+## Reading the table
+
+- **Native layers only exist where the runtime ships them.** `Java.*` and
+  `ObjC.*` are absent on the platforms that don't run those VMs — check
+  [platform-differences-matrix.md](platform-differences-matrix.md) before
+  writing a bridge call.
+- **Everything in the "Key members" column is verified on 17.15.3.** If a
+  member is missing from this list, assume it doesn't exist rather than that the
+  table is incomplete.
+- **The leaf doc is the source of truth for call shapes.** When a snippet in
+  this table disagrees with its leaf doc, the leaf doc wins — this page is an
+  index, not a reference implementation.
+
+## Minimal skeleton that touches most globals
+
+```js
+const m = Process.getModuleByName('libssl.so');       // Process / Module
+const fn = new NativeFunction(m.getExportByName('SSL_read'), 'int', ['pointer', 'pointer', 'int']);
+Interceptor.attach(fn, {
+  onEnter(args) {
+    this.n = args[2].toInt32();
+  },
+  onLeave(retval) {
+    const buf = args[1].readByteArray(Math.min(this.n, 256));  // NativePointer
+    send({ from: 'SSL_read', len: retval }, buf);              // host messaging
+  }
+});
+```

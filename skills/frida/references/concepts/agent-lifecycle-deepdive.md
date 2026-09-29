@@ -1,7 +1,7 @@
 ---
 name: agent-lifecycle-deepdive
 description: Deep dive on the Frida agent lifecycle — load, ready, unload, and the eternalize escape hatch; with a state diagram and load-time pitfalls.
-type: diagram
+type: leaf
 ---
 
 # Agent lifecycle — a deep dive
@@ -45,3 +45,22 @@ stateDiagram-v2
   the target process.
 - Unloading a script whose `onEnter` is mid-flight on another thread can crash;
   call `Interceptor.flush()` before `unload()` on hot paths.
+
+## Lifecycle failures — what you actually see
+
+| Symptom you see | State you're stuck in | Fix |
+| --- | --- | --- |
+| Hooks never fire, app runs normally | stuck in **Ready**, never `Running` (attach-too-late, or wrong symbol) | spawn-gate: see [../android/spawn-gating.md](../android/spawn-gating.md) |
+| App hangs at first frame after `-f` | stuck in **Loaded/Ready**, nobody called `resume()` | call `dev.resume(pid)` / `Process.resume()`, or drop `--pause` |
+| Agent dies the instant CLI exits | **Running → Unloaded** on host disconnect | `Script.eternalize()` for fire-and-forget |
+| Agent silently gone mid-run | transport dropped (no auto-reconnect) | re-attach + re-load; see [transport-internals.md](transport-internals.md) |
+| Data races after heavy hooks | still `Running`, hooks racing threads | `Interceptor.flush()` before mutate/unload |
+
+## The one rule that explains all of it
+
+**Your agent is a passenger on the target's threads.** The state diagram is
+about when it's *allowed to run*, but once `Running` every callback executes on
+a target thread (or, for `Java.perform`/`ObjC.schedule`, on the VM's own
+queue). That's why `resume()` timing, `flush()` before teardown, and
+`eternalize()` for longevity are the three load-bearing levers — everything
+else follows from "passenger on target threads."

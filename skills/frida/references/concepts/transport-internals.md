@@ -1,7 +1,7 @@
 ---
 name: transport-internals
 description: How the Frida transport layer works — USB/TCP framing, the handshake, message ordering, and reconnect behavior; with a sequence diagram.
-type: diagram
+type: leaf
 ---
 
 # Transport internals
@@ -47,3 +47,25 @@ sequenceDiagram
 There is no auto-reconnect. If the transport drops, the session is gone.
 Eternalized agents survive (they no longer need the transport); normal agents
 must be re-`attach`ed and re-loaded.
+
+## Diagnosing transport problems
+
+Version-skew and handshake failures produce confusing, non-specific errors —
+but they sit at opposite ends of the sequence above:
+
+- **Handshake fails before `S->>A`:** host and server disagree on protocol
+  version. Fix [../troubleshooting/version-skew.md](../troubleshooting/version-skew.md).
+  `frida-ls-devices` may still *list* the device while attach fails.
+- **`send` payload never arrives at the host:** the agent-side `send` is
+  fire-and-forget; a misnamed script that throws before the send line, or a
+  `recv` mismatch, looks identical to a transport drop. Differentiate by
+  watching stderr: an uncaught JS error prints there even when the message is
+  lost.
+- **A `send(payload, arrayBuffer)` with a huge blob stalls:** the binary
+  payload is sent in-band after the JSON frame; a multi-MB buffer can block
+  later messages on slow USB. Prefer small `send` payloads and pull bulk data
+  via a second channel (file, socket), or chunk the buffer.
+- **`rpc.exports.fn()` returns `undefined` for a clearly-returning fn:** the
+  agent-side `rpc.exports` object is created at load; if a throw happened before
+  that line, the export is absent and the host call resolves to `undefined`
+  instead of throwing. Check the agent's stderr, not just the return value.

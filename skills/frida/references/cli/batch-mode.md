@@ -43,9 +43,13 @@ frida -U -n com.example.app -q -e 'console.log(Process.arch)'
 
 ## Making the agent finish
 
-In quiet mode there's no human to `%resume` or `.exit`. For a spawned target you
-generally attach (`-n`) in batch runs, or have the agent do its work and signal
-completion. To end the run deliberately, bound it with `-t`:
+In quiet mode there's no human at a prompt, so the run ends when the agent
+finishes, the process detaches, or your `-t` bound expires. With `-f` the CLI
+auto-resumes the spawned app right after the script loads (default
+`on_spawn_complete="resume"`), so a spawned target runs freely; to *hold* it
+paused at entry (e.g. to gate before app code), pass `--pause` and resume from
+the agent via `Process.resume()` or RPC. To end the run deliberately, bound it
+with `-t`:
 
 ```sh
 frida -U -f com.example.app -l capture.js -q -t 30
@@ -53,9 +57,11 @@ frida -U -f com.example.app -l capture.js -q -t 30
 
 ## Gotchas
 
-- **Spawn (`-f`) in `-q` mode:** the app starts paused and there's no prompt to
-  `%resume`. Either attach with `-n`, or have the agent call `resume` via RPC /
-  design the run to auto-resume; simplest is to attach to an already-running app.
+- **Spawn (`-f`) in `-q` mode:** the app is auto-resumed after the script loads
+  (resume is *not* gated on a prompt — quiet just removes the REPL), so agent
+  hooks land during the brief paused window and the app then runs freely. If you
+  need the app held paused longer, use `--pause` and resume from inside the
+  agent (`Process.resume()`).
 - Without `-t`, a quiet attach can hang if the agent never exits — always bound
   long-running captures.
 - `-o` captures Frida's output stream; it does not silence the target's own stdout.

@@ -1,7 +1,7 @@
 ---
 name: stalker-transform-deepdive
 description: Stalker transform pipeline — per-instruction callback timing, where to inject callout/replace, and the hot-patch injection points; with a flowchart.
-type: diagram
+type: leaf
 ---
 
 # Stalker transform — per-instruction pipeline

@@ -34,7 +34,7 @@ The app runs anti-Frida checks, commonly:
 Most detection runs at init. Gate the app so your countermeasures load first:
 
 ```sh
-frida -U -f com.example.app -l bypass.js --no-pause
+frida -U -f com.example.app -l bypass.js    # -f spawns, CLI auto-resumes after the script loads
 ```
 
 ### 2. Move the server off the default port

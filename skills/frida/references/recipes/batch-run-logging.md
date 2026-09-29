@@ -40,7 +40,7 @@ def on_message(msg, data):
 device = frida.get_usb_device(timeout=5)
 pid = device.spawn(['com.example.app'])
 session = device.attach(pid)
-session.on('detached', lambda reason: (log({'detached': reason}), sys.exit(0)))
+session.on('detached', lambda reason, *a: (log({'detached': reason}), sys.exit(0)))
 script = session.create_script(open('recipe.js').read())
 script.on('message', on_message)
 script.load()

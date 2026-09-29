@@ -1,7 +1,7 @@
 ---
 name: performance-and-memory
 description: Frida performance and memory — hot-path cost in onEnter/onLeave, Stalker quotas, send() back-pressure, and GC/weak-ref strategy for long runs.
-type: summary
+type: leaf
 ---
 
 # Performance & memory
@@ -14,7 +14,7 @@ Every hook has a cost. This doc is the budget you should keep in mind.
 
 ```mermaid
 flowchart LR
-  T["trampoline ~10s ns"] --> E["onEnter JS callback ~µs"]
+  T["trampoline ~10ns"] --> E["onEnter JS callback ~µs"]
   E --> O["original call (variable)"]
   O --> L["onLeave JS callback ~µs"]
   L --> Se["send() serialize + transport (dominates if chatty)"]

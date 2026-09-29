@@ -25,7 +25,7 @@ Init-time work (SSL setup, root checks, class loading) runs before you attach.
 Gate the app at startup so your hooks are in place before its code runs:
 
 ```sh
-frida -U -f com.example.app -l agent.js --no-pause     # spawn, inject, then resume
+frida -U -f com.example.app -l agent.js     # spawn + auto-resume after the script loads
 ```
 
 Or from Python, resume only after the script loads:

@@ -75,7 +75,7 @@ print(len(mods))
 ## Lifecycle & cleanup
 
 ```python
-session.on('detached', lambda reason: print('detached:', reason))
+session.on('detached', lambda reason, *a: print('detached:', reason))
 script.unload()          # remove the agent
 session.detach()         # drop the session
 device.kill(pid)         # optional: kill a spawned target

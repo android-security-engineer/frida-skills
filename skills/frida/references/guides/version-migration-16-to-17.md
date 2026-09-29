@@ -1,7 +1,7 @@
 ---
 name: version-migration-16-to-17
 description: Migrating Frida 16 agents to 17 — the full removed/renamed API table, automatic rewrite rules, and a compatibility shim for code you can't change.
-type: summary
+type: leaf
 ---
 
 # Frida 16 → 17 migration

@@ -1,7 +1,7 @@
 ---
 name: security-hardening
 description: Hardening a Frida deployment — least-privilege server, isolating sensitive send() data, agent self-protection, and not leaking secrets into logs.
-type: summary
+type: leaf
 ---
 
 # Security hardening
